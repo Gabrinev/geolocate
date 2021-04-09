@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:baseflow_plugin_template/baseflow_plugin_template.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocate/memory/main.dart';
 import 'package:geolocator/geolocator.dart';
 
 /// Defines the main theme color.
@@ -31,7 +32,7 @@ class GeolocatorWidget extends StatefulWidget {
 
 class _GeolocatorWidgetState extends State<GeolocatorWidget> {
   final List<_PositionItem> _positionItems = <_PositionItem>[];
-  StreamSubscription<Position>? _positionStreamSubscription;
+  StreamSubscription<Position> _positionStreamSubscription;
 
   @override
   Widget build(BuildContext context) {
@@ -79,17 +80,27 @@ class _GeolocatorWidgetState extends State<GeolocatorWidget> {
             bottom: 80.0,
             right: 10.0,
             child: FloatingActionButton.extended(
-              onPressed: () {
-                double distanceInMeters = Geolocator.distanceBetween(41.398291, 2.203234, 41.304164, 2.073524 );
-                      _positionItems.add(_PositionItem(
-                          _PositionItemType.position, distanceInMeters.toString()));
-                    
+              onPressed: () async {
+                double distanceInMeters;
+                await Geolocator.getCurrentPosition().then((value) => {
+
+                  distanceInMeters = Geolocator.distanceBetween(value.latitude, value.longitude, 41.398470, 2.2025020),
+                  if(distanceInMeters< 5){
+                    runApp(MyApp())
+                  }else{
+                    _positionItems.add(_PositionItem(
+                        _PositionItemType.position, distanceInMeters.toString()))
+                  }
+                });
+
+
+                    //runApp(MyApp());
 
                 setState(
                   () {},
                 );
               },
-              label: Text("Ecaib to Airport"),
+              label: Text("Start Memory"),
             ),
           ),
           Positioned(
@@ -162,7 +173,7 @@ class _GeolocatorWidgetState extends State<GeolocatorWidget> {
   }
 
   bool _isListening() => !(_positionStreamSubscription == null ||
-      _positionStreamSubscription!.isPaused);
+      _positionStreamSubscription.isPaused);
 
   Color _determineButtonColor() {
     return _isListening() ? Colors.green : Colors.red;
@@ -184,10 +195,10 @@ class _GeolocatorWidgetState extends State<GeolocatorWidget> {
         return;
       }
 
-      if (_positionStreamSubscription!.isPaused) {
-        _positionStreamSubscription!.resume();
+      if (_positionStreamSubscription.isPaused) {
+        _positionStreamSubscription.resume();
       } else {
-        _positionStreamSubscription!.pause();
+        _positionStreamSubscription.pause();
       }
     });
   }
@@ -195,7 +206,7 @@ class _GeolocatorWidgetState extends State<GeolocatorWidget> {
   @override
   void dispose() {
     if (_positionStreamSubscription != null) {
-      _positionStreamSubscription!.cancel();
+      _positionStreamSubscription.cancel();
       _positionStreamSubscription = null;
     }
 

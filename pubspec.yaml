@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
   baseflow_plugin_template:
@@ -26,6 +26,7 @@ dependencies:
       url: git://github.com/Baseflow/baseflow_plugin_template.git
       ref: v2.0.0-nullsafety
   geolocator: ^7.0.1
+  rxdart: ^0.22.1
   flutter:
     sdk: flutter
   url_launcher: ^6.0.0-nullsafety.1
@@ -44,6 +45,13 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: fonts/Montserrat-Regular.ttf
+    - family: SairaStencilOne
+      fonts:
+        - asset: fonts/SairaStencilOne-Regular.ttf
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
